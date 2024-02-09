@@ -5,13 +5,13 @@ type ButtonProps = TouchableOpacityProps & {
   children: ReactNode;
 };
 
-type ButtonTextProps={
-    children:ReactNode
-}
+type ButtonTextProps = {
+  children: ReactNode;
+};
 
-type ButtonIconProps={
-    children:ReactNode
-}
+type ButtonIconProps = {
+  children: ReactNode;
+};
 
 const Button = ({ children, ...rest }: ButtonProps) => {
   return (
@@ -25,12 +25,19 @@ const Button = ({ children, ...rest }: ButtonProps) => {
   );
 };
 
-const ButtonText({children}:ButtonTextProps)=>{
-    return( 
-        <Text className="text-slate-950 font-heading text-base mx-2">{children}</Text>
-    )
-}
+const ButtonText = ({ children }: ButtonTextProps) => {
+  return (
+    <Text className="text-slate-950 font-heading text-base mx-2">
+      {children}
+    </Text>
+  );
+};
 
-const ButtonIcon({children}:ButtonIconProps)=>{
-    return children
-}
+const ButtonIcon = ({ children }: ButtonIconProps) => {
+  return children;
+};
+
+Button.Text = ButtonText;
+Button.Icon = ButtonIcon;
+
+export { Button };
