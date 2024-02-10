@@ -12,6 +12,7 @@ type ProductDataProps = {
   title: string;
   description: string;
   thumbnail: ImageProps;
+  quantity?: number;
 };
 
 type ProductItemProps = TouchableOpacityProps & {
@@ -28,9 +29,17 @@ const ProductItem = forwardRef<TouchableOpacity, ProductItemProps>(
       >
         <Image source={data.thumbnail} className="w-20 h-20 rounded-md" />
         <View className="flex-1 ml-3">
-          <Text className="text-slate-50 font-subtitle text-base flex-1">
-            {data.title}
-          </Text>
+          <View className="flex-row items-center">
+            <Text className="text-slate-50 font-subtitle text-base flex-1">
+              {data.title}
+            </Text>
+            {data.quantity && (
+              <Text className="text-slate-400 text-sm font-subtitle">
+                x {data.quantity}
+              </Text>
+            )}
+          </View>
+
           <Text className="text-slate-300 text-xs leading-5 mt-0.5 ">
             {data.description}
           </Text>
