@@ -6,11 +6,16 @@ import ProductItem from "@/components/product-item";
 import { ProductCartProps, useCartStore } from "@/stores/cart-store";
 import { formatCurrency } from "@/utils/functions/format-currency";
 import { Feather } from "@expo/vector-icons";
-import { Alert, ScrollView, Text, View } from "react-native";
+import { useNavigation } from "expo-router";
+import { useState } from "react";
+import { Alert, Linking, ScrollView, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const CartPage = () => {
   const cartStore = useCartStore();
+  const [address, setAddress] = useState("");
+  const navigation = useNavigation();
+  const phoneNumber = process.env.EXPO_PUBLIC_PHONE_NUMBER;
 
   const total = formatCurrency(
     cartStore.products.reduce((acc, curr) => {
@@ -34,6 +39,28 @@ const CartPage = () => {
     );
   };
 
+  const handleSendOrder = () => {
+    if (address.trim().length === 0) {
+      return Alert.alert("Pedido", "Informe os dados da entrega.");
+    }
+    const products = cartStore.products
+      .map((product) => `\n ${product.quantity} ${product.title}`)
+      .join("");
+
+    const message = `
+     🍔 NOVO PEDIDO 
+      \n Entregar em: ${address}
+      ${products}
+      \n Valor Total: ${total}
+      `;
+
+    Linking.openURL(
+      `http://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`
+    );
+
+    cartStore.clear();
+    navigation.goBack();
+  };
   return (
     <View className="flex-1 pt-8">
       <Header title="Seu carrinho" />
@@ -65,13 +92,21 @@ const CartPage = () => {
                 {total}
               </Text>
             </View>
-            <Input placeholder="Informe o endereço de entrega com rua, bairro, CEP, número e complemento" />
+            <Input
+              onChangeText={(text) => setAddress(text)}
+              placeholder="Informe o endereço de entrega com rua, bairro, CEP, número e complemento"
+              onSubmitEditing={handleSendOrder}
+              //tira o pular de linha quando aperta o botao de enviar
+              blurOnSubmit={true}
+              //muda o icone do botãod e enviar
+              returnKeyType="next"
+            />
           </View>
         </ScrollView>
       </KeyboardAwareScrollView>
       <View className="p-5 gap-5">
         {cartStore.products.length > 0 && (
-          <Button>
+          <Button onPress={handleSendOrder}>
             <Button.Text>Enviar pedido</Button.Text>
             <Button.Icon>
               <Feather name="arrow-right-circle" size={20} />

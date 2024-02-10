@@ -1,3 +1,4 @@
+import { formatCurrency } from "@/utils/functions/format-currency";
 import { forwardRef } from "react";
 import {
   Image,
@@ -13,6 +14,7 @@ type ProductDataProps = {
   description: string;
   thumbnail: ImageProps;
   quantity?: number;
+  price: number;
 };
 
 type ProductItemProps = TouchableOpacityProps & {
@@ -28,10 +30,13 @@ const ProductItem = forwardRef<TouchableOpacity, ProductItemProps>(
         ref={ref}
       >
         <Image source={data.thumbnail} className="w-20 h-20 rounded-md" />
-        <View className="flex-1 ml-3">
-          <View className="flex-row items-center">
+        <View className="flex-1 ml-3 ">
+          <View className="flex-row gap-2 flex-1 items-center">
             <Text className="text-slate-50 font-subtitle text-base flex-1">
               {data.title}
+            </Text>
+            <Text className="font-subtitle text-base text-lime-400">
+              {formatCurrency(data.price)}
             </Text>
             {data.quantity && (
               <Text className="text-slate-400 text-sm font-subtitle">
